@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js 라이브러리 추가 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -67,6 +67,8 @@
             margin: 0 auto;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
+
+        /********************************************************************************/
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -99,6 +101,7 @@
             border-radius: 10px;
             overflow: hidden;
             transition: transform 0.3s ease;
+            cursor: pointer;
         }
         .image-card:hover {
             transform: translateY(-5px);
@@ -116,10 +119,97 @@
             font-weight: bold;
         }
         .chart-container {
-            display: flex; /* Flexbox 사용 */
-            justify-content: center; /* 수평 중앙 정렬 */
+            display: flex;
+            justify-content: center;
             margin: 40px 0;
-            height: 400px; /* 그래프 높이 설정 */
+            height: 400px;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            margin: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* 첫 번째 이미지 카드에 특별한 스타일 적용 */
+        .image-card.instagram-link {
+            position: relative;
+        }
+
+        .image-card.instagram-link::after {
+            content: '인스타그램으로 이동';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-card.instagram-link:hover::after {
+            opacity: 1;
+        }
+        /********************************************************************************/
+        footer {
+            padding: 20px 0;
+            text-align: center;
+            background-color: #ffffff;
+            margin-top: 30px;
+            position: relative;
+        }
+
+        footer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%; /* 왼쪽 여백 20% */
+            right: 10%; /* 오른쪽 여백 20% */
+            height: 3px;
+            background-color: #FF1493;
+        }
+
+        footer p {
+            margin: 5px 0;
+            color: #333333;
+            font-size: 0.9em;
+        }
+
+        footer a {
+            color: #272627;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
         }
 
     </style>
@@ -153,46 +243,106 @@
         </div>
     </section>
     <section class="chart-container">
-        <canvas id="growthChart"></canvas> <!-- 그래프를 그릴 캔버스 추가 -->
+        <canvas id="growthChart"></canvas>
     </section>
     <section class="image-grid">
-        <div class="image-card">
-            <img src="src/img/먹스타그램.png" height="2532" width="1170"/></div>
-        <div class="image-card">
-            <img src="src/img/먹스타그램 1.png" height="1051" width="1170"/></div>
-        <div class="image-card">
-            <img src="src/img/먹스타 성과.png" height="2532" width="1170"/></div>
+        <!-- 첫 번째 이미지 (인스타그램 링크) -->
+        <a href="https://www.instagram.com/zayu_buin" target="_blank" class="image-card instagram-link">
+            <img src="src/img/먹스타그램.png" alt="Instagram Profile"/>
+        </a>
+        <!-- 두 번째 이미지 (모달로 확대) -->
+        <div class="image-card" onclick="openModal('src/img/확대1.png')">
+            <img src="src/img/먹스타그램 1.png" alt="Portfolio 1"/>
+        </div>
+        <!-- 세 번째 이미지 (모달로 확대) -->
+        <div class="image-card" onclick="openModal('src/img/확대2.png')">
+            <img src="src/img/먹스타 성과.png" alt="Portfolio 2"/>
+        </div>
     </section>
 </main>
+
+<!-- 모달 -->
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+<footer>
+    <p>김민아</p>
+    <p><a href="mailto:your.email@example.com">kmina3471@naver.com</a></p>
+</footer>
 
 <script>
     const ctx = document.getElementById('growthChart').getContext('2d');
     const growthChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['2023-03-20', '2024-11-14'], // 날짜 레이블
+            labels: ['2023-03-20', '2024-11-14'],
             datasets: [{
                 label: '팔로워 수',
-                data: [1320, 2945], // 데이터 값
-                borderColor: 'rgba(255, 46, 99, 1)',
-                backgroundColor: 'rgba(255, 46, 99, 0.2)',
-                fill: true,
+                data: [1320, 2945],
+                borderColor: '#FF1493',
+                backgroundColor: 'rgba(255, 20, 147, 0.2)',
+                borderWidth: 3,
+                tension: 0.4
             }, {
                 label: '프로페셔널 대시보드',
-                data: [436, 8200], // 데이터 값
-                borderColor: 'rgba(255, 107, 107, 1)',
-                backgroundColor: 'rgba(255, 107, 107, 0.2)',
-                fill: true,
+                data: [436, 8200],
+                borderColor: '#9ACD32',
+                backgroundColor: 'rgba(154, 205, 50, 0.2)',
+                borderWidth: 3,
+                tension: 0.4
             }]
         },
         options: {
             responsive: true,
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
                 }
             }
         }
+    });
+
+    // 모달 기능
+    function openModal(imgSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        modal.style.display = 'flex';
+        modalImg.src = imgSrc;
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+    }
+
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // 모달 이미지 클릭 시 이벤트 버블링 방지
+    document.querySelector('.modal-content').addEventListener('click', function(event) {
+        event.stopPropagation();
     });
 </script>
 </body>
