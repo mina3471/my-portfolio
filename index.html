@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="src/main/resources/portfolio.css">
+</head>
+
+<body>
+<header class="header">
+    <div class="header-content">
+        <h1>Food Content Creator & SNS Marketer</h1>
+        <p>맛과 감성을 담은 먹스타그램 콘텐츠 제작자</p>
+    </div>
+</header>
+<main class="container">
+    <section class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">2,946</div>
+            <div>인스타그램 팔로워</div>
+            <div>연초 대비 125% 증가</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">일 100명</div>
+            <div>블로그 방문자 수</div>
+            <div>개설 한달 차</div>
+        </div>
+    </section>
+    <section class="chart-container">
+        <canvas id="growthChart"></canvas>
+    </section>
+
+    <section class="skills-section">
+        <h2>Skills</h2>
+        <div class="skills-container">
+            <div class="skill-wrapper">
+                <img src="src/img/figma.jpg" alt="Figma" class="skill-icon">
+            </div>
+            <div class="skill-wrapper">
+                <img src="src/img/포토샵.png" alt="Photoshop" class="skill-icon">
+            </div>
+        </div>
+    </section>
+
+    <section class="image-grid">
+        <a href="https://www.instagram.com/zayu_buin" target="_blank" class="image-card instagram-link">
+            <img src="src/img/먹스타그램.png" alt="Instagram Profile"/>
+        </a>
+        <div class="image-card" onclick="openModal('src/img/확대1.png')">
+            <img src="src/img/먹스타그램 1.png" alt="Portfolio 1"/>
+        </div>
+        <div class="image-card" onclick="openModal('src/img/확대2.png')">
+            <img src="src/img/먹스타 성과.png" alt="Portfolio 2"/>
+        </div>
+    </section>
+</main>
+
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modalImage">
+</div>
+<footer>
+    <p>김민아</p>
+    <p><a href="mailto:your.email@example.com">kmina3471@naver.com</a></p>
+</footer>
+
+<script>
+    // 동적 성장 차트 코드 (이전에 제공한 코드와 동일)
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    const growthChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['2023-03', '2023-05', '2023-07', '2023-09', '2023-11'],
+            datasets: [{
+                label: '인스타그램 팔로워',
+                data: [1322, 1600, 2000, 2300, 2945],
+                backgroundColor: '#FF1493',
+                borderColor: '#FF1493',
+                borderWidth: 2
+            }, {
+                label: '프로페셔널 대시보드',
+                data: [436, 600, 1200, 3000, 8200],
+                backgroundColor: '#9ACD32',
+                borderColor: '#9ACD32',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 모달 기능 코드 (이전에 제공한 코드와 동일)
+    function openModal(imgSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        modal.style.display = 'flex';
+        modalImg.src = imgSrc;
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    document.querySelector('.modal-content').addEventListener('click', function(event) {
+        event.stopPropagation();
+    });
+</script>
+</body>
+</html>
